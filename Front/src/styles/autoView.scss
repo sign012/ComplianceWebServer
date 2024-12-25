@@ -1,0 +1,77 @@
+// 1600px以下适配
+@media screen and (max-width: 1602px) {
+	td.fixed-column.el-table__cell {
+		background: #0f1425 !important;
+	}
+
+	.fixed-column.el-table__cell:hover {
+		background-color: #111f41 !important;
+	}
+}
+
+// 1500px以下适配
+@media screen and (max-width: 1500px) {
+
+	.his-review .employee-select,
+	.risk-statistics .employee-select {
+		width: 223px !important;
+	}
+
+	.his-review .el-radio-button--mini .el-radio-button__inner,
+	.risk-statistics .el-radio-button--mini .el-radio-button__inner {
+		padding: 7px 5px !important;
+	}
+
+	.live-monitor .page-top .item[data-v-a1961768]:nth-child(3) {
+		flex: 1;
+	}
+
+	.monitor-card {
+		&:nth-child(3n) {
+			margin-right: 10px !important;
+		}
+
+		&:nth-child(2n) {
+			margin-right: 0 !important;
+		}
+	}
+}
+
+// 纵向适配
+@media screen and (max-height: 700px) {
+	.login-container {
+		background-size: cover !important;
+	}
+
+	.login-container .title-container img {
+		width: 200px !important;
+	}
+
+	.login-container .title-container .title {
+		font-size: 28px !important;
+	}
+
+	.login-container .title-container {
+		margin-bottom: 10px !important;
+	}
+
+	.login-container .login-form {
+		margin-bottom: 10vh !important;
+	}
+}
+
+@media screen and (max-height: 550px) {
+	.login-container .title-container img {
+		display: none !important;
+	}
+
+	.login-container .title-container {
+		margin-bottom: 0 !important;
+	}
+}
+
+@media screen and (max-height: 350px) {
+	.login-form {
+		overflow: auto !important;
+	}
+}

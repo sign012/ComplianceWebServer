@@ -1,0 +1,102 @@
+module COMM
+{
+    //客户端信息-从HTComm.jce复制
+    struct ClientInfo
+    {
+        1 optional string              userId;      //用户ID
+        2 optional string              channel;     //客户端渠道,CHANNEL_
+        3 optional string              guid;        //GUID信息
+        4 optional string              xua;         //客户端UA
+        5 optional string              imei;        //IMEI
+
+        7 optional vector<string>      macs;        //用户mac地址
+        8 optional vector<string>      hosts;       //客户端IP列表
+        9 optional map<string, string> extraParams; //扩展参数
+    };
+
+    struct UploadFileReq
+    {
+        0 require  vector<byte> file;
+        1 require  string       fileName;
+        2 optional string       filePath;
+        3 require  string       businessName;
+        4 optional int          method = 0; // 文件上传方式（默认值是0）：0-单文件上传,1-文件分片第一次上传,2-文件分片后续上传
+    };
+
+    struct UploadFileRsp
+    {
+        0 optional  int                               errCode;
+        1 optional  string                            errMsg;
+        2 optional  string                            filePath;
+        3 optional  string                            ext;
+    };
+
+    struct DownloadFileReq
+    {
+        0 require string        fileName;
+        1 optional ClientInfo   client;//客户信息
+        2 optional string       filePath;
+        3 require  string       businessName;
+    };
+
+    struct DownloadFileRsp
+    {
+        0 optional  int                               errCode;
+        1 optional  string                            errMsg;
+        2 optional vector<byte>                       file;
+    };
+
+    struct ListFilesReq
+    {
+        0 optional string                              filePath;
+    };
+
+    struct ListFilesRsp
+    {
+        0 optional  int                               errCode;
+        1 optional  string                            errMsg;
+        2 optional  vector<string>                    files;
+    };
+
+    struct DeleteFileReq
+    {
+        0 optional  string                             fileName;
+        1 optional string                              filePath;
+        2 require  string                              businessName;
+    };
+
+    struct DeleteFileRsp
+    {
+        0 optional  int                               errCode;
+        1 optional  string                            errMsg;
+    };
+
+    struct MakeDirReq
+    {
+        0 optional  string                             filePath;
+    };
+
+    struct MakeDirRsp
+    {
+        0 optional  int                               errCode;
+        1 optional  string                            errMsg;
+    };
+
+    interface FileFdfsServer
+    {
+        // 上传文件至文件服务器
+        int uploadFile(UploadFileReq req, out UploadFileRsp rsp);
+
+        // 下载文件至本地
+        int downloadFile(DownloadFileReq req, out DownloadFileRsp rsp);
+
+        //列出文件列表
+        int listFiles(ListFilesReq req,out ListFilesRsp rsp);
+
+        //删除文件
+        int deleteFile(DeleteFileReq req, out DeleteFileRsp rsp);
+
+        //创建文件夹
+        int makeDir(MakeDirReq req, out MakeDirRsp rsp);
+    };
+};

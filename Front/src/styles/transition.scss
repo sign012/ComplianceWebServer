@@ -1,0 +1,157 @@
+// vue global transition css define
+/* fade */
+.fade-enter-active,
+.fade-leave-active {
+	transition: opacity 0.25s;
+}
+
+.fade-enter-from,
+.fade-leave-active {
+	opacity: 0;
+}
+
+/* fade-transform AppMain*/
+.fade-transform-leave-active,
+.fade-transform-enter-active {
+	transition: all 0.38s;
+}
+
+.fade-transform-enter-from {
+	opacity  : 0;
+	transform: translateX(-30px);
+}
+
+.fade-transform-leave-to {
+	opacity  : 0;
+	transform: translateX(30px);
+}
+
+.fade-transform-active {
+	position: absolute;
+}
+
+/* breadcrumb transition */
+.breadcrumb-enter-active,
+.breadcrumb-leave-active {
+	transition: all 0.25s;
+}
+
+.breadcrumb-enter-from,
+.breadcrumb-leave-active {
+	opacity  : 0;
+	transform: translateX(20px);
+}
+
+.breadcrumb-leave-active {
+	position: absolute;
+}
+
+
+.content-last {
+	border-radius   : 4px;
+	background-color: rgba(112, 111, 111, 0.5);
+	/* 初始背景色为半透明的黑色 */
+	transition      : background-color 8s ease-out;
+	/* 8秒内渐隐 */
+}
+
+.content-last.hidden {
+	background-color: transparent;
+	/* 最终背景色为完全透明 */
+}
+
+.suspension-box {
+	border-radius      : 4px;
+	position           : sticky;
+	bottom             : 0px;
+	left               : 0px;
+	background         : #cdbf5e;
+	/* 初始背景色为半透明的黑色 */
+	// background-color: rgba(156, 131, 48, 0.5);
+	transition         : opacity 3s ease-out;
+	cursor             : pointer;
+	line-height        : 24px;
+
+	.content-item .time {
+		display     : inline;
+		margin-right: 5px;
+	}
+
+	.content-item .content-txt {
+		display: inline;
+	}
+}
+
+.suspension-box.hidden {
+	opacity: 0;
+}
+
+// 监控页图片拖拽/缩放
+/* 弹窗样式 */
+.monitor-hall {
+	.modal {
+		display            : none;
+		position           : fixed;
+		z-index            : 1;
+		left               : 0;
+		top                : 0;
+		width              : 100%;
+		height             : 100%;
+		overflow           : auto;
+		// background-color: rgba(0, 0, 0, 0.9);
+	}
+
+	.modal-content {
+		display   : block;
+		margin    : auto;
+		max-width : 80%;
+		max-height: 80%;
+		position  : absolute;
+		top       : 50%;
+		transform : translateY(-50%);
+	}
+
+	.close {
+		position   : absolute;
+		top        : 0;
+		right      : 15px;
+		color      : #f1f1f1;
+		font-size  : 40px;
+		font-weight: bold;
+		transition : 0.3s;
+	}
+
+	.close:hover,
+	.close:focus {
+		color          : #bbb;
+		text-decoration: none;
+		cursor         : pointer;
+	}
+
+	/* 拖拽和缩放样式 */
+	.modal-content {
+		cursor: move;
+	}
+
+	.modal-content.scaled {
+		transform: translateY(-50%) scale(1.5);
+	}
+
+	/* 图片列表样式 */
+	.image-list {
+		display  : flex;
+		flex-wrap: wrap;
+	}
+
+	.image-list img {
+		width : 150px;
+		height: auto;
+		margin: 10px;
+		cursor: pointer;
+	}
+}
+
+#modalContainer {
+	left: 45%;
+	top : 45%;
+}

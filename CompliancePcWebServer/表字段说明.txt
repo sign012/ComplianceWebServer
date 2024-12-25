@@ -1,0 +1,18 @@
+
+t_dtuser  --  管理平台 /  客户端交易平台的用户 
+
+t_dttradeaccount  -- 交易母资金账号
+
+t_dtaccountstock  -- 母资金账号股票池
+
+t_dtassetbase   -- 资产包基础信息 
+
+t_dtassetstock  -- 资产包股票池 
+
+t_dtuserasset  -- 用户资产包关系   别名从这里来   资产包名称 + 用户id    用户的资金/费率在这里设置
+
+t_dtuserstock  --  用户股票池
+
+t_dtorder -- 订单表
+
+t_dtuserstocksettle -- 持仓结算记录

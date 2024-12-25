@@ -1,0 +1,47 @@
+
+# dependencies
+**/node_modules
+/CompliancePcWebServer/public/static
+/CompliancePcWebServer/public/index.html
+/CompliancePcWebServer/public/favicon.ico
+
+**/file_img
+**/file_zip
+
+# production
+**/dist
+**/.vscode
+**/.idea
+
+# misc
+.DS_Store
+npm-debug.log*
+yarn-error.log
+
+/release
+
+/coverage
+**/.idea
+yarn.lock
+**/package-lock.json
+*bak
+.vscode
+
+# visual studio code
+.history
+*.log
+functions/*
+.temp/**
+
+# umi
+.umi
+.umi-production
+
+# screenshot
+screenshot
+.firebase
+.eslintcache
+
+build
+/*.tgz
+/CompliancePcWebServer/public/compliance

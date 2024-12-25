@@ -1,0 +1,16 @@
+
+/* ../font/PingFang-SC-Regular.ttf font文件夹内的两个字体包过大，无法通过命令行上传cdn,目前已经手动上传到cdn */
+@font-face {
+  font-family: 'DouyinFont';
+  src: url('https://cdn.upchinaproduct.com/algo/CompliancePcWebServer/static/DouyinSansBold.64ca83ed.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'PingFangSC-Regular';
+  /* src: url('../font/PingFang-SC-Regular.ttf') format('truetype'); */
+  src: url('https://cdn.upchinaproduct.com/algo/CompliancePcWebServer/static/PingFang-SC-Regular.7c31780a.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}

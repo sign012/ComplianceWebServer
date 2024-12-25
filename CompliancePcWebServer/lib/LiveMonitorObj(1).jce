@@ -1,0 +1,961 @@
+    module cl
+    {
+        //错误信息
+        struct EnoStatus
+        {
+            1 optional int      error_code;  //错误码
+            2 optional string   error_msg;   //错误信息
+        };
+
+        //客户端信息
+        struct ClientInfo
+        {
+            1 optional string  account_id; //用户ID
+            2 optional string  token;      //登录token
+        };
+
+        //视频处理状态
+        enum MergeStatus
+        {
+            MS_NOSTART = 0,      //未开始
+            MS_DOWNLOAD = 1,     //下载完成
+            MS_MERGE = 2,        //合并完成
+            MS_CHECKING = 11,    //检测中
+            MS_CHECKED  = 12,    //检测完成
+            MS_UPLOAD = 13       //上传完成
+        };
+
+        //直播平台
+        enum LivePlatform
+        {
+            LP_UNKNOWN = -1,//未知
+            LP_YOUPIN = 0,    //优品直播
+            LP_SHIPINHAO = 1,//视频号
+            LP_DOUYIN = 2,  //抖音
+            LP_XIAOERTONG = 3,  //小鹅通
+            LP_TONGHUASHUN = 4,  //同花顺
+            LP_KUAISHOU = 5 //快手
+        };
+
+        //直播时间属性
+        enum LiveTimeType
+        {
+            LTT_UNKNOWN  = -1,//未知
+            LTT_NOW     = 0,  //实时直播
+            LTT_HISTORY = 1   //历史直播
+        };
+
+        //违规类别
+        enum ViolationType
+        {
+            VT_UNKNOWN = -1,  //未知
+            VT_VIDEO = 1,     //视频违规
+            VT_AUDIO = 2,     //音频违规
+            VT_SENSITIVE =3,  //敏感词违规
+            VT_QUALIFICATION = 4, //资质展示违规
+        };
+
+        //违规检测平台
+        enum DetectionPlatform
+        {
+            DP_UNKNOWN = -1,  //未知
+            DP_HS      = 1,   //火山
+            DP_TX      = 2,   //腾讯
+            DP_UP      = 3,   //优品
+        };
+
+        //直播报备审核状态
+        enum ReviewStatus
+        {
+            RS_UNKNOWN = -1,  //未知
+            RS_NOREVIEW = 1,  //未审核
+            RS_REJECT = 2,    //拒绝
+            RS_PASS = 3       //通过
+        }; 
+
+        //范围查询类型
+        enum QueryRangeType
+        {
+            QRT_GTE = 1,  //大于等于
+            QRT_GT  = 2,  //大于
+            QRT_EQ  = 3,  //等于
+            QRT_LTE = 4,  //小于等于
+            QRT_LT  = 5,  //小于
+            QRT_NE  = 6,  //不等于
+
+        };
+
+        //直播违规审核状态
+        enum ViolationReviewStatus
+        {
+            VRS_UNKNOWN = -1,  //未知
+            VRS_NOREVIEW = 0,  //未审核
+            VRS_REJECT = 1,    //拒绝
+            VRS_PASS = 2     //通过
+        }; 
+
+
+        //标签类别
+        enum LableType
+        {
+            LT_UNKNOWN       = -1,  //未知
+            LT_VIDEO         = 1,   //视频风险
+            LT_AUDIO         = 2,   //音频风险
+            LT_IMAGETEXT     = 3,   //图文风险
+            LT_CUSTOMIZE     = 4,   //自定义风险
+        };
+
+        //时间范围查询选项(各字段必填)
+        struct QueryTimeOption
+        {
+            1 optional long             timestamp;  //时间条件(秒级时间搓)
+            2 optional QueryRangeType   range_type; //范围条件
+        };
+
+
+        //添加员工信息请求
+        struct CreateEmployeeInfoReq
+        {
+            0 optional ClientInfo       client_info;    //客户端信息
+            1 optional string           nickname;       //昵称
+            2 optional string           avatar_url;     //头像链接
+            3 optional string           name;           //姓名
+            4 optional string           live_type;      //直播类别
+            5 optional int              dept_id;        //部门id
+            6 optional LivePlatform     live_platform;  //直播平台
+            7 optional string           intro;          //简介
+            8 optional string           identity_id;    //职业证书号
+        };
+
+        //添加员工信息应答
+        struct CreateEmployeeInfoRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+            2 optional string       employee_id;//编号
+        };
+
+
+        //修改员工信息请求
+        struct UpdateEmployeeInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional string           employee_id;            //员工编号
+            2 optional string           nickname;               //昵称
+            3 optional string           avatar_url;             //头像链接
+            4 optional string           live_url;               //直播间地址
+            5 optional string           intro;                  //简介
+            6 optional string           identity_id;            //职业证书号
+            7 optional int              dept_id=-1;             //部门id
+            8 optional string           name;                   //名称
+            9 optional string           live_type;              //直播类别         
+        };
+
+        //修改员工信息应答
+        struct UpdateEmployeeInfoRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+        };
+
+        //修改员工直播监控状态
+        struct ChangeEmployeeMonitorStatusReq
+        {
+            0 optional ClientInfo       client_info;      //客户端信息
+            1 optional string           employee_id;      //员工编号
+            2 optional int              monitor_status;   //监控状态 0:不监控 1:监控
+        };
+
+        //修改员工直播监控状态
+        struct ChangeEmployeeMonitorStatusRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+        };
+
+        //创建直播报备请求(仅支持视频号配置转推信息)
+        struct CreateLiveReportReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional string           employee_id;//职员编号
+            2 optional string           live_title;//直播标题
+            3 optional string           live_content;//直播内容
+            4 optional string           live_script_url;//直播脚本文件地址
+            5 optional vector<string>   live_script_files;//直播脚本文件列表
+            6 optional long             start_time;//直播开始时间(秒级时间戳)
+            7 optional long             end_time;//直播结束时间(秒级时间戳)
+            8 optional string           third_push_addr;//转推地址
+            9 optional string           third_push_code;//转推码
+        };
+
+        //创建直播报备应答(除抖音,优品直播外 都会返回推流信息)
+        struct CreateLiveReportRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+            2 optional int          id;         //序列id
+            3 optional string       push_addr;  //推流地址
+            4 optional string       push_code;  //推流码
+        };
+
+
+        //修改直播报备信息请求
+        struct UpdateLiveReportInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional int              id;  //报备序列id
+            2 optional string           live_title;//直播标题
+            3 optional string           live_content;//直播内容
+            4 optional string           live_script_url; //直播脚本文件地址
+            5 optional vector<string>   live_script_files;//直播脚本文件列表
+            6 optional long             start_time;//直播开始时间(秒级时间戳)
+            7 optional long             end_time;//直播结束时间(秒级时间戳)
+            8 optional string           third_push_addr;//转推地址
+            9 optional string           third_push_code;//转推码
+        };
+
+        //修改直播报备信息应答
+        struct UpdateLiveReportInfoRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+        };
+
+
+        //审核直播报备信息请求
+        struct AuditLiveReportInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional int              id;                 //报备序列id
+            2 optional ReviewStatus     status=RS_PASS;     //审核意见(目前只支持填通过)
+            3 optional string           reason;             //原因(后续拒绝需要加原因)
+        };
+
+        struct AuditLiveReportInfoRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+            2 optional string       push_addr;  //推流地址
+            3 optional string       push_code;  //推流码
+        };
+
+
+        //删除直播报备信息请求
+        struct DeleteLiveReportInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional int id;
+        };
+
+        //删除直播报备信息应答
+        struct DeleteLiveReportInfoRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+        };
+
+
+
+        // 员工信息
+        struct EmployeeInfo
+        {
+            1 optional string           employee_id;    //编号
+            2 optional string           nickname;       //昵称
+            3 optional string           avatar_url;     //头像链接
+            4 optional string           name;           //姓名
+            5 optional string           live_type;      //直播类别
+            6 optional int              dept_id;        //部门id
+            7 optional int              status;         //账号状态  0--废弃 1--正常
+            8 optional int              monitor_status; //监控状态  0--不监控 1--正常
+            9 optional LivePlatform     live_platform;  //直播平台
+            10 optional string           intro;          //简介
+            11 optional string           live_url;       //直播间地址
+            12 optional string           identity_id;    //职业证书号
+            13 optional long            start_time;     //授权开始时间 秒级时间戳
+            14 optional long            expires_time;   //授权到期时间 秒级时间戳
+        };
+
+        //查询员工信息请求(各个查询条件选填,都不填则查所有)
+        struct QueryEmployeeReq
+        {
+            0 optional ClientInfo       client_info;        //客户端信息
+            1 optional vector<string>       employee_id;    //员工编号
+            2 optional string               nickname;       //昵称
+            3 optional string               name;           //姓名
+            4 optional string               identity_id;    //职业证书号
+            5 optional QueryTimeOption      start_time;     //授权开始时间 秒级时间戳
+            6 optional QueryTimeOption      expires_time;   //授权到期时间 秒级时间戳
+        };
+
+        //查询员工信息应答
+        struct QueryEmployeeRsp
+        {
+            1 optional EnoStatus        eno;        //错误码
+            2 optional vector<EmployeeInfo> employees;  //员工信息
+        };
+
+        //直播报备信息
+        struct LiveReportInfo
+        {
+            1 optional int              id;  //报备序列id
+            2 optional string           employee_id;//职员编号
+            3 optional string           nickname;   //员工昵称
+            4 optional string           avatar_url; //员工头像
+            5 optional LivePlatform  live_platform;      //直播平台
+            6 optional string           live_title; //直播标题
+            7 optional string           live_content;//直播内容
+            8 optional string           live_script_url;//直播脚本文件地址
+            9 optional vector<string>   live_script_files;//直播脚本文件列表
+            10 optional long             start_time;//直播开始时间(秒级时间戳)
+            11 optional long             end_time;//直播结束时间(秒级时间戳)
+            12 optional ReviewStatus     review_status;//审核状态
+            13 optional string           third_push_addr;//转推地址
+            14 optional string           third_push_code;//转推码
+            15 optional string           push_addr;//推流地址
+            16 optional string           push_code;//推流码
+            17 optional long             created_at;//信息创建时间(秒级时间戳)
+        };
+
+        //查询直播报备信息请求(各个查询条件选填,都不填则查所有)
+        struct QueryLiveReportReq
+        {
+            0 optional ClientInfo       client_info;    //客户端信息
+            1 optional int                       id;    //报备序列id
+            2 optional vector<string>   employee_id;    //员工编号
+            3 optional QueryTimeOption   start_time;    //直播开始时间
+            4 optional QueryTimeOption     end_time;    //直播结束时间
+            5 optional ReviewStatus   review_status=RS_UNKNOWN;    //审核状态
+            6 optional QueryTimeOption   created_at;    //创建时间
+            7 optional LivePlatform   live_platform=LP_UNKNOWN; //直播平台
+            8 optional int              page_number;    // 可选参数，分页查询的第几页，约束>0, 默认为1
+            9 optional int                page_size;    // 可选参数，分页查询的每页个数，约束>0且<=100，默认为20
+        };
+
+        //查询直播报备信息应答
+        struct QueryLiveReportRsp
+        {
+            1 optional EnoStatus                eno;           //错误码
+            2 optional int                      page_number;   // 本次查询结果的分页第几页
+            3 optional int                      page_size;     // 本次查询结果的分页每页个数
+            4 optional int                      total_count;   // 符合查询筛选条件的总条目数
+            5 optional vector<LiveReportInfo>   live_reports;  // 直播报备信息
+        };
+
+
+        //历史直播信息
+        struct LiveHistoryInfo
+        {
+            1 optional string       employee_id;        //员工编号
+            2 optional string       nickname;           //员工昵称
+            3 optional string       avatar_url;         //员工头像
+            4 optional string       live_id;            //直播编号
+            5 optional string       live_title;         //直播标题
+            6 optional string       replay_url;         //直播回放地址
+            7 optional LivePlatform live_platform;      //直播平台
+            8 optional long         watch_count;        //直播观看人次
+            9 optional long         violation_count;    //直播违规次数
+            10 optional int         report_id;          //直播关联的报备id
+            11 optional long        start_time;         //直播开始时间
+            12 optional long        end_time;           //直播结束时间
+        };
+
+        //查询历史直播请求(各个查询条件选填,都不填则查所有)
+        struct QueryLiveHistoryReq
+        {
+            0 optional ClientInfo       client_info;       //客户端信息
+            1 optional vector<string>      employee_id;    //员工id
+            2 optional vector<string>       live_ids;      //直播编号
+            3 optional QueryTimeOption      start_time;    //开始时间
+            4 optional QueryTimeOption      end_time;      //结束时间
+            5 optional int              page_number;    // 可选参数，分页查询的第几页，约束>0, 默认为1
+            6 optional int                page_size;    // 可选参数，分页查询的每页个数，约束>0且<=100，默认为20
+        };
+
+        //查询历史直播应答
+        struct QueryLiveHistoryRsp
+        {
+            1 optional EnoStatus                eno;     //错误码
+            2 optional int                      page_number;   // 本次查询结果的分页第几页
+            3 optional int                      page_size;     // 本次查询结果的分页每页个数
+            4 optional int                      total_count;   // 符合查询筛选条件的总条目数
+            5 optional vector<LiveHistoryInfo>  lives;   //历史直播信息
+        };
+
+        struct LiveCurrentInfo
+        {
+            1 optional string       employee_id;        //员工编号
+            2 optional string       nickname;           //员工昵称
+            3 optional string       avatar_url;         //员工头像
+            4 optional string       live_id;            //直播编号
+            5 optional string       live_title;         //直播标题
+            6 optional long         watch_count;        //当前直播观看人数
+            7 optional long         violation_count;    //直播违规次数 
+            8 optional string       stream_url;         //直播播流地址
+            9 optional LivePlatform live_platform;      //直播平台
+            10 optional long         start_time;        //直播开始时间
+            11 optional long         end_time;          //直播结束时间
+            12 optional LiveReportInfo report_info;     //该场直播关联的报备信息
+        };
+
+        //当前直播状态信息
+        struct EmployeeLiveInfo
+        {
+            1 optional string           employee_id;        //员工编号
+            2 optional string           nickname;           //员工昵称
+            3 optional string           avatar_url;         //员工头像
+            4 optional string           status;             //当前直播状态 "live":正在直播 ,"report":有直播计划,"last":无直播计划但是有上场直播信息,"empty":当前无直播且无上场直播且无计划直播 
+            5 optional LiveCurrentInfo  live;
+            6 optional LiveReportInfo   report;
+            7 optional LiveHistoryInfo  last;
+        };
+        
+        //查询当前直播信息请求(各查询条件可选,都不填则查所有)
+        struct QueryLiveCurrentReq
+        {
+            0 optional ClientInfo       client_info;    //客户端信息
+            1 optional vector<string>      employee_id; //员工id
+            2 optional LivePlatform   live_platform=LP_UNKNOWN; //直播平台;
+        };
+
+        //查询当前直播信息应答
+        struct QueryLiveCurrentRsp
+        {
+            1 optional EnoStatus                eno;     //错误码
+            2 optional vector<EmployeeLiveInfo> lives;   //当前直播信息
+        };
+
+        //语音转文字内容
+        struct LiveContentInfo
+        {
+            1 optional string   live_id;            //直播编号
+            2 optional string   employee_id;        //职员编号
+            3 optional string   content;            //直播文字内容
+            4 optional int      offset_time;        //相对直播开始的偏移时间,单位秒
+            5 optional long     real_time;          //真实发生时间     
+            6 optional long     created_at;         //时间
+        };
+
+        //直播信息Union
+        struct UnionLiveInfo
+        {
+            1 optional string       live_id;                 // 直播id
+            2 optional LiveTimeType time_type=LTT_HISTORY;   // 直播时间属性
+            3 optional LiveCurrentInfo live_current;         // 当前直播
+            4 optional LiveHistoryInfo live_history;         // 历史直播
+        };
+
+        //通过指定直播ID查询直播信息
+        struct QueryUnionLiveInfoByIdsReq
+        {
+            0 optional ClientInfo      client_info; //客户端信息
+            1 optional vector<string> ids;          //直播id
+        };
+
+        struct QueryUnionLiveInfoByIdsRsp
+        {
+            1 optional EnoStatus                eno;//错误码
+            2 optional vector<UnionLiveInfo>    live_infos; //直播信息
+        };
+
+        //查询直播语音转文字内容
+        struct QueryLiveContentReq
+        {
+            0 optional ClientInfo       client_info;         //客户端信息
+            1 optional LiveTimeType time_type=LTT_HISTORY;   // 直播时间属性(必填)
+            2 optional string       live_id;                // 直播编号
+            3 optional int          page_number;            // 可选参数，分页查询的第几页，约束>0, 默认为1
+            4 optional int          page_size;              // 可选参数，分页查询的每页个数，约束>0且<=100，默认为20
+        };
+
+        //查询直播语音转文字内容应答
+        struct QueryLiveContentRsp
+        {
+            1 optional EnoStatus                eno;   //错误码
+            2 optional int                      page_number;   // 本次查询结果的分页第几页
+            3 optional int                      page_size;     // 本次查询结果的分页每页个数
+            4 optional int                      total_count;   // 符合查询筛选条件的总条目数
+            5 optional vector<LiveContentInfo>  live_contents;  //直播内容
+        };
+
+
+        //违规标签
+        struct ViolationLabel
+        {
+            1 optional string                   label;     //违规标签
+            2 optional string                decision;     //处置建议
+            3 optional string                lib_name;     //违规命中的敏感词库名称
+            4 optional vector<string>           words;     //违规命中的敏感词
+        };
+
+        //自定义标签
+        struct CustomizeLabelExcerpt
+        {
+            1 optional string label_name;  //自定义标签名称
+            2 optional int    index;       //自定义标签次序
+        };
+
+
+        //直播违规内容
+        struct LiveViolationInfo
+        {
+            1 optional int                              id;         //违规编号
+            2 optional string                      live_id;         //直播编号
+            3 optional string                  employee_id;         //职员编号
+            4 optional string                     nickname;         //昵称
+            5 optional string                         name;         //名字
+            6 optional string                   avatar_url;         //头像
+            7 optional string                   content;            //直播语音违规内容
+            8 optional string                   image_url;          //直播音频违规切片
+            9 optional string                   audio_url;          //直播音频违规切片
+            10 optional string                   decision;          //审核建议
+            11 optional vector<ViolationLabel>      labels;         //违规标签
+            12 optional ViolationType           violation_type;     //违规类别 视频or音频
+            13 optional int                     offset_time;        //相对直播开始的偏移时间,单位秒
+            14 optional long                    real_time;          //真实违规时间
+            15 optional DetectionPlatform       platform;           //违规检测平台
+            16 optional ViolationReviewStatus   status;             //人工审核状态
+            17 optional string                  role_name;          //人工审核人员
+            18 optional string                  reason;             //人工审核意见
+            19 optional CustomizeLabelExcerpt   customize_label;    //用户自定义违规分类信息
+            20 optional long                    created_at;         //创建时间
+        };
+
+        //查询直播违规内容请求
+        struct QueryLiveViolationReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional LiveTimeType       time_type=LTT_HISTORY;   //直播时间属性(必填)
+            2 optional string               live_id;   //直播编号
+            3 optional vector<string>   employee_id;   //员工ID
+            4 optional LivePlatform   live_platform=LP_UNKNOWN; //直播平台;
+            5 optional ViolationReviewStatus status=VRS_UNKNOWN;//审核状态
+            6 optional QueryTimeOption   start_time;   //开始时间
+            7 optional QueryTimeOption     end_time;   //结束时间
+        };
+
+        //查询直播违规内容应答
+        struct QueryLiveViolationRsp
+        {
+            1 optional EnoStatus                  eno;            //错误码
+            2 optional vector<LiveViolationInfo>  live_violations;  //违规内容
+        };
+
+
+        //查询直播违规内容请求
+        struct QueryLiveViolationBatchReq
+        {
+            0 optional ClientInfo       client_info;    //客户端信息
+            1 optional vector<string>       live_ids;   //直播编号
+            2 optional int          page_number;       // 可选参数，分页查询的第几页，约束>0, 默认为1
+            3 optional int          page_size;         // 可选参数，分页查询的每页个数，约束>0且<=100，默认为20
+            4 optional string       sort_order;        // 可选参数，按照违规内容创建时间排序方式  "asc"   "desc"
+        };
+
+        //查询直播违规内容应答
+        struct QueryLiveViolationBatchRsp
+        {
+            1 optional EnoStatus                  eno;         //错误码
+            2 optional int                      page_number;   // 本次查询结果的分页第几页
+            3 optional int                      page_size;     // 本次查询结果的分页每页个数
+            4 optional int                      total_count;   // 符合查询筛选条件的总条目数
+            5 optional vector<LiveViolationInfo>  live_violations;  //违规内容
+        };
+
+
+        //审核违规信息请求
+        struct AuditLiveViolationReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional LiveTimeType             time_type=LTT_HISTORY; //直播时间属性(必填)
+            2 optional string                   role_name;            //审核人员(必填)
+            3 optional vector<int>                    ids;           //违规序列id
+            4 optional ViolationReviewStatus    status=VRS_PASS;     //审核意见
+            5 optional string                   reason;             //原因(后续拒绝需要加原因)
+        };
+
+        //审核违规信息应答
+        struct AuditLiveViolationRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+        };
+
+        //机审违规统计信息
+        struct MachineViolationStats
+        {
+            1 optional int video_violation_count; //视频违规次数
+            2 optional int audio_violation_count; //音频违规次数
+        };
+
+        //人审违规统计
+        struct PeopleViolationStats
+        {
+            1 optional int pass_count; //人审通过次数
+            2 optional int reject_count; //人审未通过次数
+        };
+
+        //直播统计中的核心数据
+        struct CoreData
+        {
+            1 optional int                      live_sessions;  //直播总场次
+            2 optional long                     total_duration; //直播总时长,单位秒
+            3 optional MachineViolationStats    machine_violation_stats; //机审违规统计
+            4 optional PeopleViolationStats     people_violation_stats; //人审违规统计
+        };
+
+        //直播统计中的日频数据
+        struct DailyData
+        {
+            1 optional string  date; //2024-07-01
+            2 optional long    total_duration; //直播总时长,单位秒
+            3 optional int     violation_count; //违规次数
+        };
+
+
+        //查询直播统计数据(各个查询条件选填,都不填则查所有)
+        struct QueryLiveStatsReq
+        {
+            0 optional ClientInfo       client_info;       //客户端信息
+            1 optional vector<string>      employee_id;    //员工id
+            2 optional QueryTimeOption      start_time;    //开始时间
+            3 optional QueryTimeOption      end_time;      //结束时间
+        };
+        
+        //查询直播统计数据应答
+        struct QueryLiveStatsRsp
+        {
+           1 optional EnoStatus                        eno;  //错误码
+           2 optional CoreData                   core_data;  //核心数据
+           3 optional vector<DailyData>          dail_data;  //日频数据
+           4 optional vector<string>             live_ids;   //符合条件的直播id
+        };
+
+
+
+        //创建敏感词库请求
+        struct CreateSensitiveWordsReq
+        {
+            0 optional ClientInfo       client_info;  //客户端信息
+            1 optional string           name; //词库名称
+            2 optional string           description; //词库说明
+            3 optional vector<string>   words; //敏感词
+        };
+
+        //创建敏感词库应答
+        struct CreateSensitiveWordsRsp
+        {
+            1 optional EnoStatus    eno;        //错误码
+            2 optional int          id;         //序列id
+            3 optional int          nums;       //有效敏感词个数
+        };
+
+        //更新敏感词库请求
+        struct UpdateSensitiveWordsReq
+        {
+            0 optional ClientInfo       client_info;//客户端信息
+            1 optional int              id;  //词库id
+            2 optional string           name; //词库名称
+            3 optional string           description; //词库说明
+            4 optional vector<string>   words; //敏感词              
+        };
+
+        //更新敏感词库应答
+        struct UpdateSensitiveWordsRsp
+        {
+            1 optional EnoStatus    eno;        //错误码      
+        };
+
+        //敏感词库基本信息
+        struct SensitiveWordsInfo
+        {
+            1 optional int              id;             //词库id
+            2 optional string           name;           //词库名称
+            3 optional string           description;    //词库说明
+            4 optional int              nums;           //词库总个数
+            5 optional vector<int>      preview_words;  //词汇预览 默认返回10个
+            6 optional bool             enable;         //词库启用状态
+            8 optional bool             editable;       //词库是否可编辑
+            9 optional long             created_at;     //创建时间
+            10 optional long            updated_at;     //更新时间
+        };
+
+        //查询敏感词库列表请求(各查询条件可选,都不填则查所有)
+        struct QuerySensitiveWordsListReq
+        {
+            0 optional ClientInfo     client_info; //客户端信息
+            1 optional vector<int>    ids;    //指定id
+            2 optional vector<string> names;  //指定名称
+        };
+
+        //查询敏感词库列表应答
+        struct QuerySensitiveWordsListRsp
+        {
+            1 optional EnoStatus                    eno;        //错误码
+            2 optional vector<SensitiveWordsInfo>   info_list;  //词库列表
+        };
+
+
+        //查询敏感词库具体内容请求
+        struct QuerySensitiveWordsDetailReq
+        {
+            0 optional ClientInfo     client_info; //客户端信息
+            1 optional vector<int>    ids;    //指定id
+        };
+
+        //敏感词库基本信息
+        struct SensitiveWordsDetail
+        {
+            1 optional int              id;             //词库id
+            2 optional string           name;           //词库名称
+            3 optional string           description;    //词库说明
+            4 optional vector<string>   words;          //敏感词
+            5 optional long             created_at;     //创建时间
+            6 optional long             updated_at;     //更新时间
+        };
+
+        //查询敏感词库具体内容应答
+        struct QuerySensitiveWordsDetailRsp
+        {
+            1 optional EnoStatus                    eno;        //错误码
+            2 optional vector<SensitiveWordsDetail> detail_list;  //词库具体内容列表
+        };
+
+
+        //删除敏感词库请求
+        struct DeleteSensitiveWordsReq
+        {
+            0 optional ClientInfo client_info; //客户端信息
+            1 optional int    id;    //指定id
+        };
+
+        //删除敏感词库应答
+        struct DeleteSensitiveWordsRsp
+        {
+            1 optional EnoStatus  eno; //错误码
+        };
+
+        //创建邮件告警任务请求
+        struct CreateEmailAlertTaskReq
+        {
+            0 optional ClientInfo client_info; //客户端信息
+            1 optional string              name;    //任务名称
+            2 optional vector<string>  to_addrs;    //收件人地址
+            3 optional vector<string>  cc_addrs;    //抄送人地址
+            4 optional vector<string>  employee_ids;//关注的主播id
+        };
+
+        //创建邮件告警任务应答
+        struct CreateEmailAlertTaskRsp
+        {
+            1 optional EnoStatus  eno; //错误码
+            2 optional int         id; //任务id
+        };
+
+
+        //删除邮件告警任务请求
+        struct DeleteEmailAlertTaskReq
+        {
+            0 optional ClientInfo       client_info;    //客户端信息
+            1 optional int              id;             //任务id
+        };
+
+        //删除邮件告警任务应答
+        struct DeleteEmailAlertTaskRsp
+        {
+            1 optional EnoStatus  eno; //错误码
+        };
+
+        
+        //更新邮件告警任务请求
+        struct UpdateEmailAlertTaskReq
+        {
+            0 optional ClientInfo       client_info; //客户端信息
+            1 optional int               id;        //任务id
+            2 optional string          name;        //任务名称
+            3 optional vector<string>  to_addrs;    //收件人地址
+            4 optional vector<string>  cc_addrs;    //抄送人地址
+            5 optional vector<string>  employee_ids;//关注的主播id
+        };
+
+        //更新邮件告警任务应答
+        struct UpdateEmailAlertTaskRsp
+        {
+            1 optional EnoStatus  eno; //错误码
+        };
+
+        //邮件告警任务信息
+        struct EmailAlertTaskInfo
+        {
+            1 optional int               id;        //任务id
+            2 optional string          name;        //任务名称
+            3 optional vector<string>  to_addrs;    //收件人地址
+            4 optional vector<string>  cc_addrs;    //抄送人地址
+            5 optional vector<string>  employee_ids;//关注的主播id
+            6 optional long             created_at;     //创建时间
+            7 optional long             updated_at;     //更新时间
+        };
+
+        //查询邮件告警任务请求(各查询条件可选,都不填则查所有)
+        struct QueryEmailAlertTaskReq
+        {
+            0 optional ClientInfo       client_info; //客户端信息
+            1 optional vector<int>       ids;    //指定任务id
+            2 optional vector<string>    names;  //指定任务名称
+        };
+
+        //查询邮件告警任务应答
+        struct QueryEmailAlertTaskRsp
+        {
+            1 optional EnoStatus                    eno;        //错误码
+            2 optional vector<EmailAlertTaskInfo>   info_list;  //告警任务
+        };
+
+        //标签信息
+        struct LabelInfo
+        {
+            1 optional string           label_id;  //标签id
+            2 optional string         label_name;  //标签名称
+            3 optional LableType      label_type;  //标签类别
+        };
+
+        //查询原始标签信息请求(各个查询条件选填,都不填则查所有)
+        struct QueryOriginalLabelInfoReq
+        {
+            0 optional ClientInfo       client_info;   //客户端信息
+            1 optional vector<LableType> label_types;
+        };
+
+        //查询原始标签信息应答
+        struct QueryOriginalLabelInfoRsp
+        {
+            1 optional EnoStatus                      eno;  //错误码
+            2 optional vector<LabelInfo>  original_lables;  //原始标签
+        };
+
+
+        //自定义分类标签信息
+        struct CustomizeLabelInfo
+        {
+            1 optional string               label_name;  //自定义标签名称
+            2 optional int                       index;  //自定义标签次序
+            3 optional vector<LabelInfo>  original_lables;  //原始标签
+        };
+
+        //查询自义定分类标签信息请求(各个查询条件选填,都不填则查所有)
+        struct QueryCustomizeLabelInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional vector<int> indexs; //次序号 
+        };
+
+        //查询自义定分类标签信息应答
+        struct QueryCustomizeLabelInfoRsp
+        {
+            1 optional EnoStatus                    eno;        //错误码
+            2 optional vector<CustomizeLabelInfo>   info_list;  //自定义标签
+            3 optional long                         updated_at; //更新时间
+        };
+
+
+        //更新自义定分类标签信息请求
+        struct UpdateCustomizeLabelInfoReq
+        {
+            0 optional ClientInfo       client_info;            //客户端信息
+            1 optional vector<CustomizeLabelInfo>   info_list;  //自定义标签
+        };
+
+
+        //更新自义定分类标签信息回包
+        struct UpdateCustomizeLabelInfoRsp
+        {
+            1 optional EnoStatus    eno;    //错误码
+        };
+
+
+
+        interface LiveMonitorObj
+        {
+            //添加员工(仅允许添加除抖音、优品以外的主播)
+            int createEmployeeInfo(CreateEmployeeInfoReq req,out CreateEmployeeInfoRsp rsp);
+
+            //修改员工信息
+            int updateEmployeeInfo(UpdateEmployeeInfoReq req,out UpdateEmployeeInfoRsp rsp);
+
+            //改变员工监控状态
+            int changeEmployeeMonitorStatus(ChangeEmployeeMonitorStatusReq req,out ChangeEmployeeMonitorStatusRsp rsp);
+
+            //添加直播报备信息
+            int createLiveReport(CreateLiveReportReq req,out CreateLiveReportRsp rsp);
+
+            //修改直播报备信息
+            int updateLiveReportInfo(UpdateLiveReportInfoReq req,out UpdateLiveReportInfoRsp rsp);
+
+            //审核直播报备信息
+            int auditLiveReportInfo(AuditLiveReportInfoReq req, out AuditLiveReportInfoRsp rsp);
+
+            //删除直播报备计划(仅支持删除未审核的记录)
+            int deleteLiveReportInfo(DeleteLiveReportInfoReq req,out DeleteLiveReportInfoRsp rsp);
+           
+            //查询职员
+            int queryEmployee(QueryEmployeeReq req,out QueryEmployeeRsp rsp);
+
+            //查询直播报备信息
+            int queryLiveReport(QueryLiveReportReq req,out QueryLiveReportRsp rsp);
+
+            //查询历史直播信息
+            int queryLiveHistory(QueryLiveHistoryReq req,out QueryLiveHistoryRsp rsp);
+
+            //查询主播当前直播信息
+            int queryLiveCurrent(QueryLiveCurrentReq req,out QueryLiveCurrentRsp rsp);
+
+            //通过指定直播ID查询直播信息(当前直播和历史直播都可查)
+            int queryUnionLiveInfoByIds(QueryUnionLiveInfoByIdsReq req,out QueryUnionLiveInfoByIdsRsp rsp);
+
+            //查询直播语音转文字内容
+            int queryLiveContent(QueryLiveContentReq req,out QueryLiveContentRsp rsp);
+
+            //查询直播违规内容
+            int queryLiveViolation(QueryLiveViolationReq req,out QueryLiveViolationRsp rsp);
+
+            //分页查询直播违规内容
+            int queryLiveViolationBatch(QueryLiveViolationBatchReq req,out QueryLiveViolationBatchRsp rsp);
+
+            //审核直播违规信息
+            int auditLiveViolation(AuditLiveViolationReq req, out AuditLiveViolationRsp rsp);
+
+            //查询直播统计数据
+            int queryLiveStats(QueryLiveStatsReq req,out QueryLiveStatsRsp rsp);
+
+            //创建敏感词库
+            int createSensitiveWords(CreateSensitiveWordsReq req,out CreateSensitiveWordsRsp rsp);
+
+            //更新敏感词库
+            int updateSensitiveWords(UpdateSensitiveWordsReq req,out UpdateSensitiveWordsRsp rsp);
+
+            //查询敏感词库列表
+            int querySensitiveWordsList(QuerySensitiveWordsListReq req,out QuerySensitiveWordsListRsp rsp);
+
+            //查询敏感词库具体内容
+            int querySensitiveWordsDetail(QuerySensitiveWordsDetailReq req,out QuerySensitiveWordsDetailRsp rsp);
+
+            //删除敏感词库
+            int deleteSensitiveWords(DeleteSensitiveWordsReq req,out DeleteSensitiveWordsRsp rsp);
+
+            //创建邮件告警任务
+            int createEmailAlertTask(CreateEmailAlertTaskReq req,out CreateEmailAlertTaskRsp rsp);
+
+            //删除邮件告警任务
+            int deleteEmailAlertTask(DeleteEmailAlertTaskReq req,out DeleteEmailAlertTaskRsp rsp);
+
+            //更新邮件告警任务
+            int updateEmailAlertTask(UpdateEmailAlertTaskReq req,out UpdateEmailAlertTaskRsp rsp);
+
+            //查询邮件告警任务
+            int queryEmailAlertTask(QueryEmailAlertTaskReq req,out QueryEmailAlertTaskRsp rsp);
+
+
+            //查询所有原始违规标签
+            int queryOriginalLabelInfo(QueryOriginalLabelInfoReq req,out QueryOriginalLabelInfoRsp rsp);
+
+            //查询自定义风险分类标签
+            int queryCustomizeLabelInfo(QueryCustomizeLabelInfoReq req,out QueryCustomizeLabelInfoRsp rsp);
+
+            //更新自定义风险分类标签
+            int updateCustomizeLabelInfo(UpdateCustomizeLabelInfoReq req,out UpdateCustomizeLabelInfoRsp rsp);
+
+        };
+    };
+    
+    

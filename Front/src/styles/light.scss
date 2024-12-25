@@ -1,0 +1,63 @@
+td .cursor-link {
+    cursor: pointer;
+    margin-right: 10px;
+}
+.light .el-table tr .cell {
+    line-height: 1.5;
+    padding: 7.5px 10px;
+}
+.light .el-table td .cell {
+    line-height: 1.5;
+    padding: 7.5px 10px;
+}
+.light .el-table th {
+    color: #565e66;
+    font-weight: 400;
+    background-color: #efefef !important;
+}
+.light .el-table tr:nth-child(2n) {
+    background: #f8f8f8;
+}
+.light .el-table--mini td,
+.light .el-table--mini th {
+    padding: 0 0;
+    font-size: 14px;
+}
+.light .el-table--mini td {
+    color: #000;
+}
+.light .el-input.is-disabled .el-input__inner {
+    background: transparent;
+}
+.light #scrollDiv {
+    background: transparent !important;
+    .one-create-form {
+        background: transparent;
+        border: 1px solid #ebeef5;
+    }
+
+    .li-content {
+        border-color: #ebeef5 !important;
+    }
+}
+.light .title-user,.light .collapse-cont .collapse-title {
+    background: transparent !important;
+    border: 1px solid #ebeef5;
+    color: #000 !important;
+}
+
+.light .no-data{
+    border-color: #ebeef5 !important;
+}
+.light .el-table__expand-icon > .el-icon{
+    color: #000 !important;
+}
+.light .el-date-editor{
+    background: #f5f5f5;
+    .el-range-input{
+        background: #f5f5f5;
+    }
+}
+.light .el-date-editor .el-range-separator{
+ height: 20px;
+}

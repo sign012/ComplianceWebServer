@@ -1,0 +1,55 @@
+{
+	"name": "CompliancePcWebServer",
+	"version": "1.0.0",
+	"description": "T0交易后台管理",
+	"config": {
+		"ip": "0.0.0.0",
+		"port": "5050"
+	},
+	"author": "boomli <boomli@upchina.com>",
+	"scripts": {
+		"dev": "cross-env DEBUG=app:* NODE_ENV=development nodemon ./bin/www",
+		"start": "set DEBUG=app:*& set NODE_ENV=local& nodemon -w ./ -i node_modules,public,page_rebuild -e .js,.ejs,.conf ./bin/www",
+		"pkg": " cd .. && tar -zcvf CompliancePcWebServer.tgz CompliancePcWebServer"
+	},
+	"nodeAgent": {
+		"main": "./bin/www"
+	},
+	"nodemonConfig": {
+		"ignoreRoot": [
+			"public",
+			"node_modules"
+		]
+	},
+	"dependencies": {
+		"@taf/taf-config": "^1.2.8",
+		"@taf/taf-dcache-helper": "^2.1.1",
+		"@taf/taf-logs": "^0.1.1",
+		"@taf/taf-rpc": "^3.6.8",
+		"@taf/taf-utils": "^1.1.1",
+		"body-parser": "^1.17.2",
+		"compression": "^1.7.3",
+		"cookie-parser": "^1.4.3",
+		"debug": "^2.6.9",
+		"ejs": "^2.5.9",
+		"express": "^4.15.5",
+		"express-session": "^1.17.2",
+		"jslint": "^0.12.1",
+		"knex": "^0.21.18",
+		"knex-json-query": "^1.0.0",
+		"lodash": "^4.17.10",
+		"moment": "^2.22.2",
+		"morgan": "^1.8.2",
+		"multer": "^1.4.4",
+		"mysql": "^2.18.1",
+		"node-schedule": "^2.1.0",
+		"q": "^1.5.1",
+		"request": "^2.88.2",
+		"require-directory": "^2.1.1",
+		"uuid": "^8.3.2"
+	},
+	"devDependencies": {
+		"cross-env": "^5.0.1",
+		"svg-captcha": "^1.4.0"
+	}
+}
